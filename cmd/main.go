@@ -3,16 +3,22 @@ package main
 import (
 	"context"
 	"juong/matchbox/matchbox"
-	"os"
-	"os/signal"
 	"time"
 )
 
-func main() {
-	ctx := context.Background()
-	signalCtx, cancel := signal.NotifyContext(ctx, os.Kill, os.Interrupt)
-	defer cancel()
+const (
+	SimulationDuration = 8 * time.Second
+)
 
-	box := matchbox.NewMatchbox()
-	box.RunSimulation(signalCtx, time.Duration(10))
+func main() {
+	m := matchbox.NewMatchbox()
+
+	for i := 0; i < 10; i++ {
+		player := &matchbox.Player{
+			ID: matchbox.PlayerID(i),
+		}
+		m.AddPlayerToQueue(context.Background(), player)
+	}
+
+	m.RunSimulation(context.Background(), SimulationDuration)
 }

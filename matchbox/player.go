@@ -18,3 +18,7 @@ type Player struct {
 	Counter     int
 	Latency     float64
 }
+
+type Party struct {
+	Players []*Player
+}

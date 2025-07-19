@@ -1,34 +1,42 @@
 package matchbox
 
+// An QueueEntry is something we manage in a priority queue.
 type QueueEntry struct {
-	Priority uint64
+	Priority uint64 // The priority of the item in the queue.
 	Players  []*Player
-	Index    int
+	// The index is needed by update and is maintained by the heap.Interface methods.
+	index int
 }
 
+// A MatchQueue implements heap.Interface and holds Items.
 type MatchQueue []*QueueEntry
 
-func (queue *MatchQueue) Len() int {
-	return len(*queue)
+func (mq MatchQueue) Len() int { return len(mq) }
+
+func (mq MatchQueue) Less(i, j int) bool {
+	// Max heap
+	return mq[i].Priority > mq[j].Priority
 }
 
-func (queue *MatchQueue) Less(i, j int) bool {
-	return (*queue)[i].Priority < (*queue)[j].Priority
+func (mq MatchQueue) Swap(i, j int) {
+	mq[i], mq[j] = mq[j], mq[i]
+	mq[i].index = i
+	mq[j].index = j
 }
 
-func (queue *MatchQueue) Push(x any) {
-	n := len(*queue)
+func (mq *MatchQueue) Push(x any) {
+	n := len(*mq)
 	item := x.(*QueueEntry)
-	item.Index = n
-	*queue = append(*queue, item)
+	item.index = n
+	*mq = append(*mq, item)
 }
 
-func (queue *MatchQueue) Pop() any {
-	n := len(*queue)
-	entry := (*queue)[n-1]
-	entry.Index = -1
-
-	(*queue)[n-1] = nil
-	*queue = (*queue)[0 : n-1]
-	return entry
+func (mq *MatchQueue) Pop() any {
+	old := *mq
+	n := len(old)
+	item := old[n-1]
+	old[n-1] = nil  // avoid memory leak
+	item.index = -1 // for safety
+	*mq = old[0 : n-1]
+	return item
 }
