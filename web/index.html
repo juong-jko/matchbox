@@ -42,12 +42,12 @@
                     document.getElementById('player-id').value = '';
                     document.getElementById('player-name').value = '';
                 } else {
-                    alert('Error adding player.');
+                    document.getElementById('server-msg').innerHTML = 'Error adding player.';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error adding player.');
+                document.getElementById('server-msg').innerHTML = 'Error adding player';
             });
         });
     </script>
