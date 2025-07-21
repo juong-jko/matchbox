@@ -14,6 +14,7 @@ type PlayerID uint64
 // Represents a player in the matchmaking system
 type Player struct {
 	ID          PlayerID
+	Name        string
 	PlayerState PlayerState
 	Counter     int
 	Latency     float64
